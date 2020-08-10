@@ -1,0 +1,54 @@
+/* LOGIN */
+
+.mh-100vh {
+    min-height: 100vh;
+  }
+  
+  #login-block {
+    -webkit-box-shadow: 0px 0px 45px 0px rgba(0,0,0,0.4);
+    -moz-box-shadow: 0px 0px 45px 0px rgba(0,0,0,0.4);
+    box-shadow: 0px 0px 45px 0px rgba(0,0,0,0.4);
+    z-index: 2;
+  }
+  
+  @media (max-width: 991.98px) {
+    #login-block {
+      opacity: .95;
+    }
+  }
+  
+  @media (max-width: 991.98px) {
+    #bg-block {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .w-lg-75 {
+      width: 75%;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .rounded-lg-0 {
+      border-radius: 0 !important;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .w-xl-50 {
+      width: 50%;
+    }
+  }  
+  #demotext {
+    text-shadow: 0 1px 0px #378ab4, 1px 0 0px #5dabcd, 1px 2px 1px #378ab4, 2px 1px 1px #5dabcd, 2px 3px 2px #378ab4, 3px 2px 2px #5dabcd, 3px 4px 2px #378ab4, 4px 3px 3px #5dabcd, 4px 5px 3px #378ab4, 5px 4px 2px #5dabcd, 5px 6px 2px #378ab4, 6px 5px 2px #5dabcd, 6px 7px 1px #378ab4, 7px 6px 1px #5dabcd, 7px 8px 0px #378ab4, 8px 7px 0px #5dabcd, 2px 2px 20px #FAB900;
+    color: #FAB900;
+    font-family: 'Bangers', cursive;
+    font-size: 2.3em;
+    margin-bottom: 1rem;
+    transform: rotateZ(-2deg);
+    }
