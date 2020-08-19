@@ -1,4 +1,5 @@
 <?php
+
 require_once('../../../class/Database.php');
 require_once('../../class/Insert.php');
 require_once('../../class/ManagerInsert.php');
@@ -15,4 +16,5 @@ $gallery = new Gallery($avatar, $alt, $category);
 $insert = new ManagerInsertGallery($bdd);
 
 $insert->insertgallery($gallery);
+
 ?>
