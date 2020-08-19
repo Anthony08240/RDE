@@ -1,5 +1,8 @@
 <?php
-include('../include/connexiondbval.php');
+require_once('../class/Database.php');
+
+$bdd = new Database('localhost', 'rde', 'root', '');
+$bdd = $bdd->PDOConnexion();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,16 +97,6 @@ include('../include/connexiondbval.php');
                     <a class="nav-link" data-toggle="tab" href="#warrior" role="tab" aria-controls="home" aria-selected="true"><p class="tabgalerietxt inscripdesktop">Carolo Warrior(<?= $nb2 ?>)</p></a>
                 </li>
               <?php 
-                $nbequipeswarrior->closeCursor();
-                $nbequipescuisine = $bdd->prepare("SELECT * FROM rdecuisineregister");
-                $nbequipescuisine->execute();
-                $nb3 = $nbequipescuisine->rowCount();
-              ?>
-                <li class="nav-item mr-2">
-                    <a class="nav-link" data-toggle="tab" href="#cuisine" role="tab" aria-controls="home" aria-selected="true"><p class="tabgalerietxt inscripdesktop">Concours de Cuisine(<?= $nb3 ?>)</p></a>
-                </li>
-              <?php 
-                $nbequipescuisine->closeCursor();
                 $nbequipesgraille = $bdd->prepare("SELECT * FROM rdepiqueniquetregister");
                 $nbequipesgraille->execute();
                 $nb4 = $nbequipesgraille->rowCount();
@@ -123,16 +116,6 @@ include('../include/connexiondbval.php');
                 <!-- <li class="nav-item mr-2">
                     <a class="nav-link" data-toggle="tab" href="#bal" role="tab" aria-controls="home" aria-selected="true"><p class="tabgalerietxt inscripdesktop">Bal de la rentrée</p></a>
                 </li> -->
-              <?php 
-                $nbequipesbasket->closeCursor();
-                $nbequipesescape = $bdd->prepare("SELECT * FROM rdeescaperegister");
-                $nbequipesescape->execute();
-                $nb6 = $nbequipesescape->rowCount();
-              ?>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#escape" role="tab" aria-controls="home" aria-selected="true"><p class="tabgalerietxt inscripdesktop">Escape Game(<?= $nb6 ?>)</p></a>
-                </li>
-                <?php $nbequipesescape->closeCursor(); ?>
                 <li class="nav-item mr-2">
                     <a class="nav-link" data-toggle="tab" href="#resultexpress" role="tab" aria-controls="home" aria-selected="true"><p class="tabgalerietxt inscripdesktop">Resultats qcm</p></a>
                 </li>
