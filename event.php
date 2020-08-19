@@ -1,4 +1,6 @@
-<?php require_once('include/connexiondbval.php'); ?>
+<?php 
+include('include/connexiondbval.php');
+?>
 <!doctype html>
 <html lang="fr">
 

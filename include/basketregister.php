@@ -1,6 +1,11 @@
 <?php
 
-include('connexiondbval.php');
+require_once('../class/Database.php');
+require_once('../class/User.php');
+require_once('../class/ManagerUser.php');
+
+$bdd = new Database('localhost', 'rde', 'root', '');
+$bdd = $bdd->PDOConnexion();
 
 $establishment = !empty($_POST['etablissement']) ? $_POST['etablissement'] : NULL;
 
@@ -48,198 +53,14 @@ $tel7 = !empty($_POST['tel7']) ? $_POST['tel7'] : NULL;
 $mail7 = !empty($_POST['mail7']) ? $_POST['mail7'] : NULL;
 $verifmail7 = !empty($_POST['verifmail7']) ? $_POST['verifmail7'] : NULL;
 
-$objetinscrip = utf8_decode("Confirmation d'inscription au Tournoi de Basket");
-$messageinscrip = utf8_decode("Bonjour l'équipe $teamname, votre inscription est bien prise en compte pour le Tournoi de Basket. A très bientôt ! <br><br>Merci de ne pas répondre à ce mail, pour toute demande merci de vous rendre sur la page contact du site prévue à cet effet.");
 
-    if($mail1 == $verifmail1 && $mail2 == $verifmail2 && $mail3 == $verifmail3 && $mail4 == $verifmail4 && $mail5 == $verifmail5) {
+$insc_basket = new UserBasket($establishment, $teamname, $name1, $firstname1, $tel1, $mail1, $verifmail1, 
+$name2, $firstname2, $tel2, $mail2, $verifmail2, $name3, $firstname3, $tel3, $mail3, $verifmail3, 
+$name4, $firstname4, $tel4, $mail4, $verifmail4, $name5, $firstname5, $tel5, $mail5, $verifmail5, 
+$name6, $firstname6, $tel6, $mail6, $verifmail6, $name7, $firstname7, $tel7, $mail7, $verifmail7);
 
-        $teamnameexist = $bdd->prepare("SELECT team_name FROM rdebasketregister WHERE team_name = '$teamname'");
-        $teamnameexist->execute();
+$insc = new ManagerUserIsncriptionBasket($bdd);
 
-        $count = $teamnameexist->rowCount();
-        if($count>0) {
-            header('location: ../event_register_basket.php?success=3');
-            } else {
-        
-            $part1 = $bdd->prepare("INSERT INTO rdeparticipants (name, first_name, phone, mail)
-                                    VALUES ( :name, :first_name, :phone, :mail)");
+$insc->inscription_basket($insc_basket);
 
-            $part1->execute(array(
-                ':name' => $name1,
-                ':first_name' => $firstname1,
-                ':phone' => $tel1,
-                ':mail' => $mail1
-            ));
-            $part1->closeCursor();
-            $idpart1 = $bdd->lastInsertId();
-
-            $part2 = $bdd->prepare("INSERT INTO rdeparticipants (name, first_name, phone, mail)
-                                    VALUES ( :name, :first_name, :phone, :mail)");
-
-            $part2->execute(array(
-                ':name' => $name2,
-                ':first_name' => $firstname2,
-                ':phone' => $tel2,
-                ':mail' => $mail2
-            ));
-            $part2->closeCursor();
-            $idpart2 = $bdd->lastInsertId();
-
-            $part3 = $bdd->prepare("INSERT INTO rdeparticipants (name, first_name, phone, mail)
-                                    VALUES ( :name, :first_name, :phone, :mail)");
-
-            $part3->execute(array(
-                ':name' => $name3,
-                ':first_name' => $firstname3,
-                ':phone' => $tel3,
-                ':mail' => $mail3
-            ));
-            $part3->closeCursor();
-            $idpart3 = $bdd->lastInsertId();
-
-            $part4 = $bdd->prepare("INSERT INTO rdeparticipants (name, first_name, phone, mail)
-                                    VALUES ( :name, :first_name, :phone, :mail)");
-
-            $part4->execute(array(
-                ':name' => $name4,
-                ':first_name' => $firstname4,
-                ':phone' => $tel4,
-                ':mail' => $mail4
-            ));
-            $part4->closeCursor();
-            $idpart4 = $bdd->lastInsertId();
-
-            $part5 = $bdd->prepare("INSERT INTO rdeparticipants (name, first_name, phone, mail)
-                                    VALUES ( :name, :first_name, :phone, :mail)");
-
-            $part5->execute(array(
-                ':name' => $name5,
-                ':first_name' => $firstname5,
-                ':phone' => $tel5,
-                ':mail' => $mail5
-            ));
-            $part5->closeCursor();
-            $idpart5 = $bdd->lastInsertId();
-
-            if($name6 != NULL && $firstname6 != NULL && $tel6 != NULL && $mail6 != NULL && $verifmail6 != NULL) {
-
-                $part6 = $bdd->prepare("INSERT INTO rdeparticipants (name, first_name, phone, mail)
-                                    VALUES ( :name, :first_name, :phone, :mail)");
-
-                $part6->execute(array(
-                    ':name' => $name6,
-                    ':first_name' => $firstname6,
-                    ':phone' => $tel6,
-                    ':mail' => $mail6
-                ));
-                $part6->closeCursor();
-                $idpart6 = $bdd->lastInsertId();
-            }
-
-            if($name7 != NULL && $firstname7 != NULL && $tel7 != NULL && $mail7 != NULL && $verifmail7 != NULL) {
-
-                $part7 = $bdd->prepare("INSERT INTO rdeparticipants (name, first_name, phone, mail)
-                                    VALUES ( :name, :first_name, :phone, :mail)");
-
-                $part7->execute(array(
-                    ':name' => $name7,
-                    ':first_name' => $firstname7,
-                    ':phone' => $tel7,
-                    ':mail' => $mail7
-                ));
-                $part7->closeCursor();
-                $idpart7 = $bdd->lastInsertId();
-            }
-
-            $basketregistration = $bdd->prepare("INSERT INTO rdebasketregister (team_name, establishment)
-                                                VALUES ( :team_name, :establishment)");
-
-            $basketregistration->execute(array(
-            ':team_name' => $teamname,
-            ':establishment' => $establishment
-            ));
-            $basketregistration->closeCursor();
-
-            $basketrelation1 = $bdd->prepare("INSERT INTO rdebasketrelation (participant_id, name_team)
-                                                VALUES ( :participant_id, :name_team)");
-
-            $basketrelation1->execute(array(
-            ':participant_id' => $idpart1,
-            ':name_team' => $teamname
-            ));
-            $basketrelation1->closeCursor();
-
-            $basketrelation2 = $bdd->prepare("INSERT INTO rdebasketrelation (participant_id, name_team)
-                                                VALUES ( :participant_id, :name_team)");
-
-            $basketrelation2->execute(array(
-            ':participant_id' => $idpart2,
-            ':name_team' => $teamname
-            ));
-            $basketrelation2->closeCursor();
-
-            $basketrelation3 = $bdd->prepare("INSERT INTO rdebasketrelation (participant_id, name_team)
-                                                VALUES ( :participant_id, :name_team)");
-
-            $basketrelation3->execute(array(
-            ':participant_id' => $idpart3,
-            ':name_team' => $teamname
-            ));
-            $basketrelation3->closeCursor();
-
-            $basketrelation4 = $bdd->prepare("INSERT INTO rdebasketrelation (participant_id, name_team)
-                                                VALUES ( :participant_id, :name_team)");
-
-            $basketrelation4->execute(array(
-            ':participant_id' => $idpart4,
-            ':name_team' => $teamname
-            ));
-            $basketrelation4->closeCursor();
-
-            $basketrelation5 = $bdd->prepare("INSERT INTO rdebasketrelation (participant_id, name_team)
-                                                VALUES ( :participant_id, :name_team)");
-
-            $basketrelation5->execute(array(
-            ':participant_id' => $idpart5,
-            ':name_team' => $teamname
-            ));
-            $basketrelation5->closeCursor();
-
-            if($name6 != NULL && $firstname6 != NULL && $tel6 != NULL && $mail6 != NULL && $verifmail6 != NULL) {
-
-                $basketrelation6 = $bdd->prepare("INSERT INTO rdebasketrelation (participant_id, name_team)
-                                                VALUES ( :participant_id, :name_team)");
-
-                $basketrelation6->execute(array(
-                ':participant_id' => $idpart6,
-                ':name_team' => $teamname
-                ));
-                $basketrelation6->closeCursor();
-            }
-
-            if($name7 != NULL && $firstname7 != NULL && $tel7 != NULL && $mail7 != NULL && $verifmail7 != NULL) {
-
-                $basketrelation7 = $bdd->prepare("INSERT INTO rdebasketrelation (participant_id, name_team)
-                                                VALUES ( :participant_id, :name_team)");
-
-                $basketrelation7->execute(array(
-                ':participant_id' => $idpart7,
-                ':name_team' => $teamname
-                ));
-                $basketrelation7->closeCursor();
-            }
-
-                mail($mail1, $objetinscrip, $messageinscrip);
-                mail($mail2, $objetinscrip, $messageinscrip);
-                mail($mail3, $objetinscrip, $messageinscrip);
-                mail($mail4, $objetinscrip, $messageinscrip);
-                mail($mail5, $objetinscrip, $messageinscrip);
-                if($mail6 != NULL) {mail($mail6, $objetinscrip, $messageinscrip);};
-                if($mail7 != NULL) {mail($mail7, $objetinscrip, $messageinscrip);};
-
-                header('location: ../event_register_basket.php?success=1');
-        }
-    } else {
-        header('location: ../event_register_basket.php?success=2');
-    }
 ?>

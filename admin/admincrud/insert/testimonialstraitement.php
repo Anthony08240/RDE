@@ -1,5 +1,10 @@
 <?php
-include ('../../../include/connexiondbval.php');
+require_once('../../../class/Database.php');
+require_once('../../class/Insert.php');
+require_once('../../class/ManagerInsert.php');
+
+$bdd = new Database('localhost', 'rde', 'root', '');
+$bdd = $bdd->PDOConnexion();
 
 $first_name = !empty($_POST['first_name']) ? $_POST['first_name'] : NULL;
 $age = !empty($_POST['age']) ? $_POST['age'] : NULL;
@@ -7,17 +12,10 @@ $establishment = !empty($_POST['establishment']) ? $_POST['establishment'] : NUL
 $text = !empty($_POST['text']) ? $_POST['text'] : NULL;
 
 
-$newtestimonial = $bdd->prepare("INSERT INTO rdetestimonials (first_name, age, establishment, text)
-                              VALUES ( :first_name, :age, :establishment, :text)");
+$testimonials = new Testimonials($first_name, $age, $establishment, $text);
 
-$newtestimonial->execute(array(
-  ':first_name' => $first_name,
-  ':age' => $age,
-  ':establishment' => $establishment,
-  ':text' => $text
-));
-$newtestimonial->closeCursor();
+$insert = new ManagerInsertTestimonials($bdd);
 
-header("Location: ../../admin.php?success=testimonialadd");
+$insert->inserttestimonials($testimonials);
 
 ?>

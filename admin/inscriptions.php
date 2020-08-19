@@ -1,5 +1,8 @@
 <?php
-include('../include/connexiondbval.php');
+require_once('../class/Database.php');
+
+$bdd = new Database('localhost', 'rde', 'root', '');
+$bdd = $bdd->PDOConnexion();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -95,15 +98,6 @@ include('../include/connexiondbval.php');
                 </li>
               <?php 
                 $nbequipeswarrior->closeCursor();
-                $nbequipescuisine = $bdd->prepare("SELECT * FROM rdecuisineregister");
-                $nbequipescuisine->execute();
-                $nb3 = $nbequipescuisine->rowCount();
-              ?>
-                <li class="nav-item mr-2">
-                    <a class="nav-link" data-toggle="tab" href="#cuisine" role="tab" aria-controls="home" aria-selected="true"><p class="tabgalerietxt inscripdesktop">Concours de Cuisine(<?= $nb3 ?>)</p></a>
-                </li>
-              <?php 
-                $nbequipescuisine->closeCursor();
                 $nbequipesgraille = $bdd->prepare("SELECT * FROM rdepiqueniquetregister");
                 $nbequipesgraille->execute();
                 $nb4 = $nbequipesgraille->rowCount();
@@ -124,15 +118,7 @@ include('../include/connexiondbval.php');
                     <a class="nav-link" data-toggle="tab" href="#bal" role="tab" aria-controls="home" aria-selected="true"><p class="tabgalerietxt inscripdesktop">Bal de la rentrée</p></a>
                 </li> -->
               <?php 
-                $nbequipesbasket->closeCursor();
-                $nbequipesescape = $bdd->prepare("SELECT * FROM rdeescaperegister");
-                $nbequipesescape->execute();
-                $nb6 = $nbequipesescape->rowCount();
-              ?>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#escape" role="tab" aria-controls="home" aria-selected="true"><p class="tabgalerietxt inscripdesktop">Escape Game(<?= $nb6 ?>)</p></a>
-                </li>
-                <?php $nbequipesescape->closeCursor(); ?>
+                $nbequipesbasket->closeCursor(); ?>
                 <li class="nav-item mr-2">
                     <a class="nav-link" data-toggle="tab" href="#resultexpress" role="tab" aria-controls="home" aria-selected="true"><p class="tabgalerietxt inscripdesktop">Resultats qcm</p></a>
                 </li>
@@ -319,102 +305,6 @@ include('../include/connexiondbval.php');
     </center>
   </div>
 
-  <!-- Cuisine -->
-
-  <div class="tab-pane fade show container mt-2" id="cuisine" role="tabpanel" aria-labelledby="register1-tab">
-  <?php
-        $req5 = $bdd->prepare("SELECT * FROM rdecuisineregister");
-        $req5->execute();
-        $placescuisine = $req5->rowCount();
-        $req5->closeCursor();
-
-      ?>
-
-<h4 class="text-center font-weight-light font-italic text-black-50 mt-4 mb-5">Il y a actuellement <?= $placescuisine ?> équipes inscrites.</h4>
-
-    <table class="table">
-      <thead class="thead-light">
-      <tr>
-          <th scope="col">Nom de l'équipe</th>
-          <th scope="col">Etablissement</th>
-          <th scope="col">Nom</th>
-          <th scope="col">Prénom</th>
-          <th scope="col">Téléphone</th>
-          <th scope="col">Mail</th>
-        </tr>
-      </thead>
-      <tbody>
-
-
-      <?php
-            $req3 = $bdd->prepare("SELECT * FROM rdecuisineregister, rdecuisinerelation, rdeparticipants WHERE rdecuisinerelation.participant_id = rdeparticipants.id_participant AND rdecuisinerelation.name_team = rdecuisineregister.team_name ORDER BY rdecuisineregister.team_name ASC");
-            $req3->execute();
-
-            while ($donnees = $req3->fetch())
-        { ?>
-        <tr>
-          <th scope="row"><?= $donnees['team_name']; ?></th>
-          <td><?= $donnees['establishment']; ?></td>
-          <td><?= $donnees['name']; ?></td>
-          <td><?= $donnees['first_name']; ?></td>
-          <td><?= $donnees['phone']; ?></td>
-          <td><?= $donnees['mail']; ?></td>
-        </tr>
-        <?php
-            } $req3->closecursor();
-        ?>
-      </tbody>
-    </table>
-    <br>
-    <center>
-      <h3>Envoyer un mail à tous les participants du Concours de Cuisine</h3>
-      <form action="mailinscriptions/cuisine.php" method="post">
-        <input type="text" class="form-control" name="objet" placeholder="Sujet"><br>
-        <textarea class="form-control" name="message" placeholder="Message"></textarea><br>
-        <input class="submit-btn" type="submit" value="Envoyer">
-      </form>
-    </center>
-    <br>
-    <br>
-    <center>
-      <h3>Envoyer un mail aux équipes sélectionnées</h3>
-      <form action="mailinscriptions/groupecuisine.php" method="post">
-
-        <?php
-        $mailgroupecuisine = $bdd->prepare("SELECT team_name FROM rdecuisineregister");
-        $mailgroupecuisine->execute();
-
-        while ($data = $mailgroupecuisine->fetch()) {
-        ?>
-        <input type="checkbox" name="groupe[<?=$data['team_name']?>]">&nbsp;&nbsp;<?=$data['team_name']?></input><br>
-        <?php } $mailgroupecuisine->closeCursor(); ?>
-        <input type="text" class="form-control" name="objet" placeholder="Sujet"><br>
-        <textarea class="form-control" name="message" placeholder="Message"></textarea><br>
-        <input class="submit-btn" type="submit" value="Envoyer">
-      </form>
-      <br>
-    </center>
-    <br>
-    <br>
-    <center>
-      <h3>Suppression d'équipe(s)</h3>
-      <form action="deleteteams/cuisine.php" method="post">
-
-        <?php
-        $deletegroupecuisine = $bdd->prepare("SELECT team_name FROM rdecuisineregister");
-        $deletegroupecuisine->execute();
-
-        while ($data = $deletegroupecuisine->fetch()) {
-        ?>
-        <input type="checkbox" name="groupe[<?=$data['team_name']?>]">&nbsp;&nbsp;<?=$data['team_name']?></input><br>
-        <?php } $deletegroupecuisine->closeCursor(); ?>
-        <br>
-        <input class="submit-btn" type="submit" value="Supprimer">
-      </form>
-      <br>
-    </center>
-  </div>
-
   <!-- Pique-nique -->
 
   <div class="tab-pane fade show container mt-2" id="piquenique" role="tabpanel" aria-labelledby="register1-tab">
@@ -555,131 +445,7 @@ include('../include/connexiondbval.php');
     </center>
   </div>
 
-  <!-- Bal -->
-
-  <!-- <div class="tab-pane fade show container mt-2" id="bal" role="tabpanel" aria-labelledby="register1-tab">
-    <table class="table">
-      <thead class="thead-light">
-      <tr>
-          <th scope="col">Etablissement</th>
-          <th scope="col">Nom</th>
-          <th scope="col">Prénom</th>
-          <th scope="col">Téléphone</th>
-          <th scope="col">Email</th>
-        </tr>
-      </thead>
-      <tbody> -->
-
-
-        <?php
-            // $req6 = $bdd->prepare("SELECT * FROM RDEBalregister, rdeparticipants WHERE RDEBalregister.participant_id = rdeparticipants.id_participant ORDER BY rdeparticipants.name ASC");
-            // $req6->execute();
-
-            // while ($donnees = $req6->fetch())
-        //{ ?>
-        <!-- <tr>
-          <th scope="row"><?= $donnees['establishment']; ?></th>
-          <td><?= $donnees['name']; ?></td>
-          <td><?= $donnees['first_name']; ?></td>
-          <td><?= $donnees['phone']; ?></td>
-          <td><?= $donnees['mail']; ?></td>
-        </tr> -->
-        <?php
-            // }
-            // $req6->closecursor();
-        ?>
-      <!-- </tbody>
-    </table>
-  </div> -->
-
-  <!-- Escape -->
-
-  <div class="tab-pane fade show container mt-2" id="escape" role="tabpanel" aria-labelledby="register1-tab">
-    <table class="table">
-      <thead class="thead-light">
-      <tr>
-      <th scope="row">Nom d'équipe</th>
-          <th scope="col">Etablissement</th>
-          <th scope="col">Nombre de participants</th>
-          <th scope="col">Nom</th>
-          <th scope="col">Prénom</th>
-          <th scope="col">Téléphone</th>
-          <th scope="col">Mail</th>
-        </tr>
-      </thead>
-      <tbody>
-
-
-      <?php
-            $req7 = $bdd->prepare("SELECT * FROM rdeescaperegister, rdeparticipants WHERE rdeescaperegister.id_participant = rdeparticipants.id_participant ORDER BY rdeescaperegister.id_participant ASC");
-            $req7->execute();
-
-            while ($donnees = $req7->fetch())
-        { ?>
-        <tr>
-        <th scope="row"><?= $donnees['team_name']; ?></th>
-          <td><?= $donnees['establishment']; ?></td>
-          <td><?= $donnees['nbpart']; ?></td>
-          <td><?= $donnees['name']; ?></td>
-          <td><?= $donnees['first_name']; ?></td>
-          <td><?= $donnees['phone']; ?></td>
-          <td><?= $donnees['mail']; ?></td>
-        </tr>
-        <?php
-            } $req7->closecursor();
-        ?>
-      </tbody>
-    </table>
-    <br>
-    <center>
-      <h3>Envoyer un mail à tous les participants de l'Escape Game</h3>
-      <form action="mailinscriptions/escape.php" method="post">
-        <input type="text" class="form-control" name="objet" placeholder="Sujet"><br>
-        <textarea class="form-control" name="message" placeholder="Message"></textarea><br>
-        <input class="submit-btn" type="submit" value="Envoyer">
-      </form>
-    </center>
-    <br>
-    <br>
-    <center>
-      <h3>Envoyer un mail aux équipes sélectionnées</h3>
-      <form action="mailinscriptions/groupeescape.php" method="post">
-
-        <?php
-        $mailgroupeescape = $bdd->prepare("SELECT team_name FROM rdeescaperegister");
-        $mailgroupeescape->execute();
-
-        while ($data = $mailgroupeescape->fetch()) {
-        ?>
-        <input type="checkbox" name="groupe[<?=$data['team_name']?>]">&nbsp;&nbsp;<?=$data['team_name']?></input><br>
-        <?php } $mailgroupeescape->closeCursor(); ?>
-        <input type="text" class="form-control" name="objet" placeholder="Sujet"><br>
-        <textarea class="form-control" name="message" placeholder="Message"></textarea><br>
-        <input class="submit-btn" type="submit" value="Envoyer">
-      </form>
-      <br>
-    </center>
-    <br>
-    <br>
-    <center>
-      <h3>Suppression d'équipe(s)</h3>
-      <form action="deleteteams/escape.php" method="post">
-
-        <?php
-        $deletegroupeescape = $bdd->prepare("SELECT team_name FROM rdeescaperegister");
-        $deletegroupeescape->execute();
-
-        while ($data = $deletegroupeescape->fetch()) {
-        ?>
-        <input type="checkbox" name="groupe[<?=$data['team_name']?>]">&nbsp;&nbsp;<?=$data['team_name']?></input><br>
-        <?php } $deletegroupeescape->closeCursor(); ?>
-        <br>
-        <input class="submit-btn" type="submit" value="Supprimer">
-      </form>
-      <br>
-    </center>
-  </div>
-
+  
 
     <div class="tab-pane fade show container mt-2" id="resultexpress" role="tabpanel" aria-labelledby="register1-tab">
     <table class="table">

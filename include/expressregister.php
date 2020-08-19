@@ -1,6 +1,10 @@
 <?php
+require_once('../class/Database.php');
+require_once('../class/User.php');
+require_once('../class/ManagerUser.php');
 
-include('connexiondbval.php');
+$bdd = new Database('localhost', 'rde', 'root', '');
+$bdd = $bdd->PDOConnexion();
 
 $establishment = !empty($_POST['etablissement']) ? $_POST['etablissement'] : NULL;
 
@@ -38,155 +42,12 @@ $tel5 = !empty($_POST['tel5']) ? $_POST['tel5'] : NULL;
 $mail5 = !empty($_POST['mail5']) ? $_POST['mail5'] : NULL;
 $verifmail5 = !empty($_POST['verifmail5']) ? $_POST['verifmail5'] : NULL;
 
-$objetinscrip = utf8_decode("Confirmation d'inscription au Carolo Express");
-$messageinscrip = utf8_decode("Bonjour l'équipe $teamname, votre inscription est bien prise en compte pour le Carolo Express. A très bientôt ! <br><br>Merci de ne pas répondre à ce mail, pour toute demande merci de vous rendre sur la page contact du site prévue à cet effet.");
+$insc_express = new UserExpress($establishment, $teamname, $password, $verifpassword, $name1, $firstname1, $tel1, $mail1, $verifmail1, 
+$name2, $firstname2, $tel2, $mail2, $verifmail2, $name3, $firstname3, $tel3, $mail3, $verifmail3, 
+$name4, $firstname4, $tel4, $mail4, $verifmail4, $name5, $firstname5, $tel5, $mail5, $verifmail5);
 
+$insc = new ManagerUserIsncriptionExpress($bdd);
 
-
-$teamnameexist = $bdd->prepare("SELECT team_name FROM rdeexpressregister WHERE team_name = '$teamname'");
-$teamnameexist->execute();
-
-$count = $teamnameexist->rowCount();
-if($count==0) {
-    if($mail1 == $verifmail1 && $mail2 == $verifmail2 && $mail3 == $verifmail3 && $mail4 == $verifmail4 && $mail5 == $verifmail5) {
-
-        if($password == $verifpassword) {
-            $part1 = $bdd->prepare("INSERT INTO rdeparticipants (name, first_name, phone, mail)
-                                    VALUES ( :name, :first_name, :phone, :mail)");
-
-            $part1->execute(array(
-                ':name' => $name1,
-                ':first_name' => $firstname1,
-                ':phone' => $tel1,
-                ':mail' => $mail1
-            ));
-            $part1->closeCursor();
-            $idpart1 = $bdd->lastInsertId();
-
-            $part2 = $bdd->prepare("INSERT INTO rdeparticipants (name, first_name, phone, mail)
-                                    VALUES ( :name, :first_name, :phone, :mail)");
-
-            $part2->execute(array(
-                ':name' => $name2,
-                ':first_name' => $firstname2,
-                ':phone' => $tel2,
-                ':mail' => $mail2
-            ));
-            $part2->closeCursor();
-            $idpart2 = $bdd->lastInsertId();
-
-            $part3 = $bdd->prepare("INSERT INTO rdeparticipants (name, first_name, phone, mail)
-                                    VALUES ( :name, :first_name, :phone, :mail)");
-
-            $part3->execute(array(
-                ':name' => $name3,
-                ':first_name' => $firstname3,
-                ':phone' => $tel3,
-                ':mail' => $mail3
-            ));
-            $part3->closeCursor();
-            $idpart3 = $bdd->lastInsertId();
-
-            $part4 = $bdd->prepare("INSERT INTO rdeparticipants (name, first_name, phone, mail)
-                                    VALUES ( :name, :first_name, :phone, :mail)");
-
-            $part4->execute(array(
-                ':name' => $name4,
-                ':first_name' => $firstname4,
-                ':phone' => $tel4,
-                ':mail' => $mail4
-            ));
-            $part4->closeCursor();
-            $idpart4 = $bdd->lastInsertId();
-
-            $part5 = $bdd->prepare("INSERT INTO rdeparticipants (name, first_name, phone, mail)
-                                    VALUES ( :name, :first_name, :phone, :mail)");
-
-            $part5->execute(array(
-                ':name' => $name5,
-                ':first_name' => $firstname5,
-                ':phone' => $tel5,
-                ':mail' => $mail5
-            ));
-            $part5->closeCursor();
-            $idpart5 = $bdd->lastInsertId();
-
-            $basketregistration = $bdd->prepare("INSERT INTO rdeexpressregister (team_name, establishment, password_manif)
-                                                VALUES ( :team_name, :establishment, :password_manif)");
-
-            $basketregistration->execute(array(
-            ':team_name' => $teamname,
-            ':establishment' => $establishment,
-            ':password_manif' => $password
-            ));
-            $basketregistration->closeCursor();
-
-            $basketrelation1 = $bdd->prepare("INSERT INTO rdeexpressrelation (participant_id, name_team)
-                                                VALUES ( :participant_id, :name_team)");
-
-            $basketrelation1->execute(array(
-            ':participant_id' => $idpart1,
-            ':name_team' => $teamname
-            ));
-            $basketrelation1->closeCursor();
-
-            $basketrelation2 = $bdd->prepare("INSERT INTO rdeexpressrelation (participant_id, name_team)
-                                                VALUES ( :participant_id, :name_team)");
-
-            $basketrelation2->execute(array(
-            ':participant_id' => $idpart2,
-            ':name_team' => $teamname
-            ));
-            $basketrelation2->closeCursor();
-
-            $basketrelation3 = $bdd->prepare("INSERT INTO rdeexpressrelation (participant_id, name_team)
-                                                VALUES ( :participant_id, :name_team)");
-
-            $basketrelation3->execute(array(
-            ':participant_id' => $idpart3,
-            ':name_team' => $teamname
-            ));
-            $basketrelation3->closeCursor();
-
-            $basketrelation4 = $bdd->prepare("INSERT INTO rdeexpressrelation (participant_id, name_team)
-                                                VALUES ( :participant_id, :name_team)");
-
-            $basketrelation4->execute(array(
-            ':participant_id' => $idpart4,
-            ':name_team' => $teamname
-            ));
-            $basketrelation4->closeCursor();
-
-            $basketrelation5 = $bdd->prepare("INSERT INTO rdeexpressrelation (participant_id, name_team)
-                                                VALUES ( :participant_id, :name_team)");
-
-            $basketrelation5->execute(array(
-            ':participant_id' => $idpart5,
-            ':name_team' => $teamname
-            ));
-            $basketrelation5->closeCursor();
-
-            mail($mail1, $objetinscrip, $messageinscrip);
-            mail($mail2, $objetinscrip, $messageinscrip);
-            mail($mail3, $objetinscrip, $messageinscrip);
-            mail($mail4, $objetinscrip, $messageinscrip);
-            mail($mail5, $objetinscrip, $messageinscrip);
-
-            header('location: ../event_register_caroloexpress.php?success=1');
-
-            }
-            else {
-                header('location: ../event_register_caroloexpress.php?success=2');
-            }
-        
-            
-
-        } else {
-            header('location: ../event_register_caroloexpress.php?success=3');
-    }
-}
-else {
-    header('location: ../event_register_caroloexpress.php?success=4');
-}
+$insc->inscription_express($insc_express);
 
 ?>

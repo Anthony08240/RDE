@@ -1,5 +1,8 @@
 <?php
-include ('../../../include/connexiondbval.php');
+require_once('../../../class/Database.php');
+
+$bdd = new Database('localhost', 'rde', 'root', '');
+$bdd = $bdd->PDOConnexion();
 $idgallery = $_GET['id'];
 
 $image_link = !empty($_POST['image_link']) ? $_POST['image_link'] : NULL;

@@ -1,5 +1,8 @@
 <?php
-include ('../../../include/connexiondbval.php');
+require_once('../../../class/Database.php');
+
+$bdd = new Database('localhost', 'rde', 'root', '');
+$bdd = $bdd->PDOConnexion();
 $idpartner = $_GET['id'];
 ?>
 <!DOCTYPE html>
