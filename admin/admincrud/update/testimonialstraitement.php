@@ -1,5 +1,8 @@
 <?php
-include ('../../../include/connexiondbval.php');
+require_once('../../../class/Database.php');
+
+$bdd = new Database('localhost', 'rde', 'root', '');
+$bdd = $bdd->PDOConnexion();
 $idtestimonial = $_GET['id'];
 
 $first_name = !empty($_POST['first_name']) ? $_POST['first_name'] : NULL;
